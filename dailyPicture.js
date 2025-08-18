@@ -1,6 +1,5 @@
-import { View, Text, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native"
 import { useEffect, useState } from "react"
-import { SafeAreaProvider } from "react-native-safe-area-context"
 
 export default function Opportunity() {
   const [photo, setPhoto] = useState("")
@@ -20,30 +19,52 @@ export default function Opportunity() {
       })
   }, [])
   return (
-    <SafeAreaProvider>
-      <View style={styles.text}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.content}>
         <Image style={styles.img} source={{ uri: photo }}></Image>
-        <Text>{date}</Text>
-        <Text>{description}</Text>
+        <Text style={styles.date}>Taken: {date}</Text>
+        <Text style={styles.description}>{description}</Text>
       </View>
-    </SafeAreaProvider>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-  text: {
+  container: {
+    flexGrow: 1,
     alignItems: "center",
-    justifyContent: "center",
   },
-  list: {
-    alignItems: "center",
-    justifyContent: "center",
+  content: {
+    width: "100%",
+    backgroundColor: "#ffffffff",
+    shadowColor: "#000000",
+    shadowOpacity: 0.1,
+    elevation: 3,
+    maxWidth: 400,
+  },
+  date: {
+    fontSize: 14,
+    color: "#666666",
+    marginBottom: 5,
+    textAlign: "center",
+  },
+  description: {
+    fontSize: 16,
+    lineHeight: 20,
+    color: "#333333",
+    marginTop: 10,
+    // textAlign: "space-around",
+    alignSelf: "center",
+    maxWidth: 365,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
   },
   img: {
     justifyContent: "center",
     alignItems: "center",
-    width: 20,
-    height: 20,
+    width: 400,
+    height: 400,
     margin: 5,
+    resizeMode: "cover",
   },
 })
