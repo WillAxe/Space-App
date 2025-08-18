@@ -1,15 +1,16 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native"
+import { View, Text, StyleSheet } from "react-native"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 export default function Home() {
   return (
     <SafeAreaProvider>
       <View style={styles.container}>
-        <Text style={styles.title}>Nasa</Text>
+        <Text style={styles.title}>Astro-Lens</Text>
         <Text style={styles.text}>
-          Nasa has 2 rovers currenlty exploring the martian surface, (Curiosity,
+          See space through NASA&#39;s eyes -- NASA has 2 rovers currenlty
+          operating on Mars and exploring the martian surface, (Curiosity,
           Perseverance) with highly equipped instruments and cameras. This app
-          give you opportunity to discover Nasas latest images from Curiosity
-          and the daily astronomical picture of the day (APOD).
+          gives you opportunity to discover NASA&#39;s latest images from the
+          Curiosity rover and the daily astronomical picture of the day (APOD).
         </Text>
       </View>
     </SafeAreaProvider>

@@ -6,6 +6,23 @@ import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
 export default function Curiosity() {
   const [date, setDate] = useState(new Date())
   const [photos, setPhotos] = useState([])
+  const [status, setStatus] = useState("")
+  const [landingDate, setLandingDate] = useState("")
+  const [launchDate, setLaunchDate] = useState("")
+  const [totalImages, setTotalImages] = useState("")
+
+  useEffect(() => {
+    fetch(
+      "https://api.nasa.gov/mars-photos/api/v1/manifests/curiosity?api_key=exMqslCiUXdM31JPmZ34uSseN3PuXSSWYGVdiodt"
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        setStatus(result.photo_manifest.status)
+        setLandingDate(result.photo_manifest.landing_date)
+        setLaunchDate(result.photo_manifest.launch_date)
+        setTotalImages(result.photo_manifest.photos.length)
+      })
+  }, [])
 
   function fetchPhotos(selectedDate) {
     const formattedDate = selectedDate.toISOString().split("T")[0]
@@ -40,27 +57,38 @@ export default function Curiosity() {
     <SafeAreaProvider>
       <View style={styles.homeContainer}>
         <Text style={styles.title}>Curiosity Rover on Mars</Text>
-        <Button title="Chose date" onPress={showDate} color="0b3d91"></Button>
+        <Text style={styles.info}>
+          status: {status} landed: {landingDate} launched: {launchDate} images:
+          {totalImages}
+        </Text>
+        <Button title="Select date" onPress={showDate} color="#0b3d91"></Button>
         <Text style={styles.subTitle}>
-          Chosen date: {date.toISOString().split("T")[0]}
+          Selected date: {date.toISOString().split("T")[0]}
         </Text>
       </View>
       <View style={styles.container}>
-        <FlatList
-          contentContainerStyle={styles.list}
-          data={photos}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.imageSection}>
-              <Image style={styles.img} source={{ uri: item.img_src }}></Image>
-              <Text style={styles.text}>
-                Taken on {item.earth_date} by {item.camera.full_name}
-              </Text>
-            </View>
-          )}
-          vertical
-          showsVerticalScrollIndicator={false}
-        />
+        {photos.length > 0 ? (
+          <FlatList
+            contentContainerStyle={styles.list}
+            data={photos}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.imageSection}>
+                <Image
+                  style={styles.img}
+                  source={{ uri: item.img_src }}
+                ></Image>
+                <Text style={styles.text}>
+                  Taken on {item.earth_date} by {item.camera.full_name} camera
+                </Text>
+              </View>
+            )}
+            vertical
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <Text>No images for the selected date!</Text>
+        )}
       </View>
     </SafeAreaProvider>
   )
