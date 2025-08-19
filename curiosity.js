@@ -38,7 +38,7 @@ export default function Curiosity() {
 
   useEffect(() => {
     fetchPhotos(date)
-  }, [])
+  }, [date])
 
   const showDate = () => {
     DateTimePickerAndroid.open({
@@ -46,7 +46,7 @@ export default function Curiosity() {
       onChange: (event, selectedDate) => {
         if (selectedDate) {
           setDate(selectedDate)
-          fetchPhotos(selectedDate)
+          // fetchPhotos(selectedDate)
         }
       },
       mode: "date",
