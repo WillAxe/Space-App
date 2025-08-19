@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 26,
     color: "#333333",
     marginTop: 10,
     // textAlign: "space-around",
@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 400,
     height: 400,
-    margin: 5,
     resizeMode: "cover",
   },
 })

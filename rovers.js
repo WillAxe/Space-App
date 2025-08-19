@@ -2,8 +2,29 @@ import { View, Text, StyleSheet, Image, FlatList, Button } from "react-native"
 import { useEffect, useState } from "react"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
+import { RadioGroup } from "react-native-radio-buttons-group"
 
-export default function Curiosity() {
+export default function Rovers() {
+  const radioButtons = [
+    {
+      id: "1",
+      label: "Curiosity",
+      value: "curiosity",
+    },
+    {
+      id: "2",
+      label: "Opportunity",
+      value: "opportunity",
+    },
+    {
+      id: "3",
+      label: "Spirit",
+      value: "spirit",
+    },
+  ]
+
+  const [value, setValue] = useState("")
+  const [selectedId, setSelectedId] = useState()
   const [date, setDate] = useState(new Date())
   const [photos, setPhotos] = useState([])
   const [status, setStatus] = useState("")
@@ -11,19 +32,38 @@ export default function Curiosity() {
   const [launchDate, setLaunchDate] = useState("")
   const [totalImages, setTotalImages] = useState("")
 
-  useEffect(() => {
+  //Fetch some data about the rover's mission's
+  function fetchMissionData(roverName) {
     fetch(
-      "https://api.nasa.gov/mars-photos/api/v1/manifests/curiosity?api_key=exMqslCiUXdM31JPmZ34uSseN3PuXSSWYGVdiodt"
+      `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}?api_key=exMqslCiUXdM31JPmZ34uSseN3PuXSSWYGVdiodt`
     )
       .then((response) => response.json())
       .then((result) => {
         setStatus(result.photo_manifest.status)
         setLandingDate(result.photo_manifest.landing_date)
         setLaunchDate(result.photo_manifest.launch_date)
-        setTotalImages(result.photo_manifest.photos.length)
+        setTotalImages(result.photo_manifest.total_photos)
       })
-  }, [])
+  }
 
+  useEffect(() => {
+    if (selectedId) {
+      const selectedRover = radioButtons.find(
+        (radioButtons) => radioButtons.id === selectedId
+      )
+      if (selectedRover) {
+        setValue(selectedRover.value)
+      }
+    }
+  }, [selectedId])
+
+  useEffect(() => {
+    if (value) {
+      fetchMissionData(value)
+    }
+  }, [value])
+
+  //Fetch for the curiosity rover, sadly the api no longer got the images from the spririt and opportunity rover
   function fetchPhotos(selectedDate) {
     const formattedDate = selectedDate.toISOString().split("T")[0]
     fetch(
@@ -46,7 +86,6 @@ export default function Curiosity() {
       onChange: (event, selectedDate) => {
         if (selectedDate) {
           setDate(selectedDate)
-          // fetchPhotos(selectedDate)
         }
       },
       mode: "date",
@@ -54,14 +93,19 @@ export default function Curiosity() {
     })
   }
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={styles.rovers}>
       <View style={styles.homeContainer}>
-        <Text style={styles.title}>Curiosity Rover on Mars</Text>
+        <Text style={styles.title}>Rovers on Mars</Text>
+        <RadioGroup
+          radioButtons={radioButtons}
+          onPress={setSelectedId}
+          selectedId={selectedId}
+        ></RadioGroup>
         <Text style={styles.info}>
           status: {status} landed: {landingDate} launched: {launchDate} images:
           {totalImages}
         </Text>
-        <Button title="Select date" onPress={showDate} color="#0b3d91"></Button>
+        <Button title="Select date" onPress={showDate} color="#000000"></Button>
         <Text style={styles.subTitle}>
           Selected date: {date.toISOString().split("T")[0]}
         </Text>
@@ -87,7 +131,7 @@ export default function Curiosity() {
             showsVerticalScrollIndicator={false}
           />
         ) : (
-          <Text>No images for the selected date!</Text>
+          <Text style={styles.errMsg}>No images for the selected date!</Text>
         )}
       </View>
     </SafeAreaProvider>
@@ -95,6 +139,10 @@ export default function Curiosity() {
 }
 
 const styles = StyleSheet.create({
+  rovers: {
+    backgroundColor: "#f5f5f5",
+    padding: 50,
+  },
   homeContainer: {
     flex: 1,
     backgroundColor: "#f5f5f5",
@@ -132,10 +180,15 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   text: {
-    color: "#ff9800",
+    color: "#0b3d91",
     fontWeight: 600,
     fontSize: 14,
     padding: 5,
-    backgroundColor: "#e7e7e7ff",
+    backgroundColor: "#e7e7e7",
+  },
+  errMsg: {
+    textAlign: "center",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 })

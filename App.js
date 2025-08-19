@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar"
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native"
-import Curiosity from "./curiosity"
+import Rovers from "./rovers"
 import Home from "./home"
 import DailyPicture from "./dailyPicture"
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context"
@@ -20,12 +20,12 @@ export default function App() {
           <View style={styles.navbar}>
             <Routes>
               <Route path="/" Component={Home} />
-              <Route path="/curiosity" Component={Curiosity} />
+              <Route path="/rovers" Component={Rovers} />
               <Route path="/dailyPicture" Component={DailyPicture} />
             </Routes>
           </View>
           <Navbar />
-          <StatusBar style="auto" />
+          <StatusBar style="inverted" />
         </SafeAreaView>
       </NativeRouter>
     </SafeAreaProvider>
@@ -42,9 +42,9 @@ function Navbar() {
         active={locataion.pathname === "/"}
       ></NavItem>
       <NavItem
-        to="/curiosity"
-        label="curiosity"
-        active={locataion.pathname === "/curiosity"}
+        to="/rovers"
+        label="rovers"
+        active={locataion.pathname === "/rovers"}
       ></NavItem>
       <NavItem
         to="/dailyPicture"
@@ -72,19 +72,19 @@ function NavItem({ to, label, active }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#0b3d91",
   },
   navbar: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
+    padding: 2,
   },
   navLinks: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingVertical: 12,
+    paddingVertical: 10,
     backgroundColor: "#0b3d91",
   },
   navItem: {
