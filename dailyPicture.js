@@ -1,30 +1,90 @@
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native"
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Button,
+  Modal,
+  Pressable,
+} from "react-native"
 import { useEffect, useState } from "react"
+import { DateTimePickerAndroid } from "@react-native-community/datetimepicker"
+import ImageViewer from "react-native-image-zoom-viewer"
 
 export default function Opportunity() {
-  const [photo, setPhoto] = useState("")
+  const [photo, setPhoto] = useState(null)
   const [description, setDescription] = useState("")
-  const [date, setDate] = useState("")
+  const [date, setDate] = useState(new Date())
+  const [apiDate, setApiDate] = useState("")
+  const [image, setImage] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
 
-  useEffect(() => {
+  function fetchPhotoFromDate(selectedDate) {
+    const formattedDate = selectedDate.toISOString().split("T")[0]
     fetch(
-      "https://api.nasa.gov/planetary/apod?api_key=exMqslCiUXdM31JPmZ34uSseN3PuXSSWYGVdiodt"
+      `https://api.nasa.gov/planetary/apod?date=${formattedDate}&api_key=exMqslCiUXdM31JPmZ34uSseN3PuXSSWYGVdiodt`
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.title)
         setPhoto(result.url)
         setDescription(result.explanation)
-        setDate(result.date)
+        setApiDate(result.date)
       })
+  }
+
+  useEffect(() => {
+    fetchPhotoFromDate(new Date())
   }, [])
+
+  useEffect(() => {
+    if (date) {
+      fetchPhotoFromDate(date)
+    }
+  }, [date])
+
+  const showDate = () => {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange: (event, selectedDate) => {
+        if (selectedDate) {
+          setDate(selectedDate)
+        }
+      },
+      mode: "date",
+      is24Hour: true,
+    })
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.content}>
-        <Image style={styles.img} source={{ uri: photo }}></Image>
-        <Text style={styles.date}>Taken: {date}</Text>
+        <Pressable
+          onPress={() => {
+            setImage(photo)
+            setModalVisible(true)
+          }}
+        >
+          <Image style={styles.img} source={{ uri: photo }}></Image>
+        </Pressable>
+        <Text style={styles.date}>Date: {apiDate}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
+      <View>
+        <Button title="Select date" onPress={showDate} color="#000000"></Button>
+      </View>
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <ImageViewer
+          imageUrls={[{ url: image }]}
+          enableSwipeDown
+          onCancel={() => setModalVisible(false)}
+          onSwipeDown={() => setModalVisible(false)}
+        ></ImageViewer>
+      </Modal>
     </ScrollView>
   )
 }

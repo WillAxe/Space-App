@@ -43,7 +43,7 @@ function Navbar() {
       ></NavItem>
       <NavItem
         to="/rovers"
-        label="rovers"
+        label="Rovers"
         active={locataion.pathname === "/rovers"}
       ></NavItem>
       <NavItem
