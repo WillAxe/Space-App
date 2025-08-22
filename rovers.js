@@ -160,13 +160,6 @@ export default function Rovers() {
                       setSelectedImage(item.img_src)
                       setModalVisible(true)
                     }}
-                    style={({ pressed }) => [
-                      {
-                        width: pressed ? "80%" : "90%",
-                        height: pressed ? 300 : 250,
-                      },
-                      styles.pressable,
-                    ]}
                   >
                     <Image
                       alt="picture taken from Curiosity on Mars"
@@ -187,6 +180,8 @@ export default function Rovers() {
             <Text style={styles.errMsg}>No images for the selected date!</Text>
           )}
         </View>
+
+        {/*To close the modal and exit the picture the user must scoll down*/}
         <Modal
           visible={modalVisible}
           transparent={true}
